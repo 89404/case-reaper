@@ -147,25 +147,51 @@ function playOpenSound() {
 async function onRollDone(wonSkin) {
   rolling.value = false
   
-  // Use the skin that was visually won in the animation
-  resultSkin.value = wonSkin
-  
-  // Make API call to save the won skin to inventory (if user is logged in)
   try {
-    const response = await apiCall('/api/inventory/add', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(wonSkin)
-    })
+    // Call the API to actually open the case and get the real result
+    const actualWonSkin = await apiCall(`/api/cases/open/${selectedCase.value._id}`)
     
-    if (!response.ok) {
-      console.warn('Failed to save item to inventory')
-    }
+    // Use the actual skin from the server (this ensures fair randomization)
+    resultSkin.value = actualWonSkin
+    
+    // Play reward sound based on rarity
+    playRewardSound(actualWonSkin.rarity)
+    
+    // The API already handles adding to inventory if user is authenticated
+    console.log('Case opened successfully:', actualWonSkin)
+    
   } catch (error) {
-    console.error('Error saving item to inventory:', error)
+    console.error('Error opening case:', error)
+    // Fallback to the visually won skin if API fails
+    resultSkin.value = wonSkin
   }
+}
+
+function playRewardSound(rarity) {
+  let soundFile = '/sounds/case_reward_milspec.mp3' // default
+  
+  switch (rarity) {
+    case 'knife':
+      soundFile = '/sounds/case_reward_knife.mp3'
+      break
+    case 'covert':
+      soundFile = '/sounds/case_reward_covert.mp3'
+      break
+    case 'classified':
+      soundFile = '/sounds/case_reward_classified.mp3'
+      break
+    case 'restricted':
+      soundFile = '/sounds/case_reward_restricted.mp3'
+      break
+    case 'mil-spec':
+    default:
+      soundFile = '/sounds/case_reward_milspec.mp3'
+      break
+  }
+  
+  const audio = new Audio(soundFile)
+  audio.volume = 0.6
+  audio.play().catch(e => console.log('Could not play reward sound:', e))
 }
 
 function closeResult() {
