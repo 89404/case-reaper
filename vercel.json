@@ -1,18 +1,18 @@
 {
-  "builds": [
-    {
-      "src": "nuxt.config.ts",
-      "use": "@nuxtjs/vercel-builder"
+  "buildCommand": "npm run build",
+  "outputDirectory": ".output/public",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nuxtjs",
+  "functions": {
+    ".output/server/index.mjs": {
+      "maxDuration": 30
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/server/routes/api.js"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     }
-  ],
-  "env": {
-    "NUXT_PUBLIC_API_BASE_URL": "@nuxt_public_api_base_url",
-    "NUXT_PUBLIC_SOCKET_URL": "@nuxt_public_socket_url"
-  }
+  ]
 }

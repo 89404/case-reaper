@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     '~/assets/css/tailwind.css',
   ],
   nitro: {
-    preset: 'node-server'
+    preset: 'vercel'
   },
   devServer: {
     proxy: {
@@ -28,4 +28,4 @@ export default defineNuxtConfig({
       }
     }
   }
-}) 
+})
