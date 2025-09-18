@@ -1,9 +1,9 @@
 export const useApi = () => {
-  const baseURL = process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:4000'
-  
+  // For Nuxt server API routes, we use relative URLs
+  // This works both in development and production
   const apiCall = async (endpoint, options = {}) => {
     try {
-      const response = await fetch(`${baseURL}${endpoint}`, {
+      const response = await fetch(endpoint, {
         credentials: 'include',
         ...options
       })
