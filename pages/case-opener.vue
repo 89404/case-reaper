@@ -11,6 +11,7 @@
       </div>
       <transition name="fade" mode="out-in">
         <div v-if="!selectedCase">
+          <!-- Cases will load here -->
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             <div v-for="caseItem in filteredCases" :key="caseItem._id" class="bg-[#23252b] rounded-lg p-6 flex flex-col items-center hover:bg-[#282a31] transition cursor-pointer shadow-md" @click="selectCase(caseItem)">
               <img :src="caseItem.image" :alt="caseItem.name" class="w-32 h-28 object-contain mb-3" />
@@ -58,6 +59,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useCases } from '~/composables/useCases'
 import { useCaseContents } from '~/composables/useCaseContents'
+import { useApi } from '~/composables/useApi'
 import CaseRollAnimation from '~/components/CaseRollAnimation.vue'
 import CaseResult from '~/components/CaseResult.vue'
 
@@ -69,10 +71,19 @@ const rolling = ref(false)
 const showingCase = ref(false)
 const resultSkin = ref(null)
 const caseAnimationPhase = ref(0) // 0: shake, 1: opening
-const { cases, fetchCases } = useCases()
+const cases = ref([])
 const { skins, fetchCaseContents } = useCaseContents()
 
-onMounted(fetchCases)
+onMounted(async () => {
+  try {
+    const response = await fetch('/api/cases')
+    if (response.ok) {
+      cases.value = await response.json()
+    }
+  } catch (error) {
+    console.error('Failed to fetch cases:', error)
+  }
+})
 
 const filteredCases = computed(() => {
   return cases.value.filter(c =>

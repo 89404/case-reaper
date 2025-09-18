@@ -7,9 +7,13 @@ export const useCases = () => {
   
   const fetchCases = async () => {
     try {
-      cases.value = await apiCall('/api/cases')
+      console.log('useCases: Starting to fetch cases...')
+      const result = await apiCall('/api/cases')
+      console.log('useCases: API call result:', result)
+      cases.value = result
+      console.log('useCases: Cases assigned:', cases.value)
     } catch (error) {
-      console.error('Failed to fetch cases:', error)
+      console.error('useCases: Failed to fetch cases:', error)
     }
   }
   
