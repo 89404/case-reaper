@@ -3,16 +3,5 @@
   "outputDirectory": ".output/public",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
-  "framework": "nuxtjs",
-  "functions": {
-    ".output/server/index.mjs": {
-      "maxDuration": 30
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
-  ]
+  "framework": "nuxtjs"
 }
