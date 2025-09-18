@@ -7,7 +7,10 @@ export const useCaseContents = () => {
   
   const fetchCaseContents = async (caseId) => {
     try {
-      contents.value = await apiCall(`/api/cases/${caseId}/contents`)
+      console.log('Fetching case contents for:', caseId)
+      const result = await apiCall(`/api/cases/${caseId}/contents`)
+      console.log('Case contents fetched:', result)
+      contents.value = result
     } catch (error) {
       console.error('Failed to fetch case contents:', error)
     }

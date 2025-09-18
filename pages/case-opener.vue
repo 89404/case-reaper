@@ -72,7 +72,7 @@ const showingCase = ref(false)
 const resultSkin = ref(null)
 const caseAnimationPhase = ref(0) // 0: shake, 1: opening
 const cases = ref([])
-const { skins, fetchCaseContents } = useCaseContents()
+const { contents: skins, fetchCaseContents } = useCaseContents()
 
 onMounted(async () => {
   try {
