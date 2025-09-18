@@ -67,6 +67,9 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+
+const { apiCall } = useApi()
+
 const inventory = ref([])
 const selectedItem = ref('')
 const result = ref(null)
@@ -92,12 +95,7 @@ const riskPercentage = computed(() => {
 
 onMounted(async () => {
   try {
-    const res = await fetch('http://localhost:4000/api/inventory', {
-      credentials: 'include'
-    })
-    if (res.ok) {
-      inventory.value = await res.json()
-    }
+    inventory.value = await apiCall('/api/inventory')
   } catch (error) {
     console.error('Failed to fetch inventory:', error)
   }

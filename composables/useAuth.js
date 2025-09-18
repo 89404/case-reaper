@@ -4,17 +4,13 @@ export const user = ref(null)
 
 export async function fetchUser() {
   try {
-    const res = await fetch('http://localhost:4000/api/auth/user', { credentials: 'include' })
-    if (res.ok) {
-      const data = await res.json()
-      user.value = data
-    } else {
-      user.value = null
-    }
+    const { apiCall } = useApi()
+    user.value = await apiCall('/api/auth/user')
   } catch (error) {
     console.error('Failed to fetch user:', error)
     user.value = null
   }
+}
 }
 
 export function useAuth() {

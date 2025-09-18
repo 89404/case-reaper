@@ -61,6 +61,8 @@ import useCaseContents from '~/composables/useCaseContents'
 import CaseRollAnimation from '~/components/CaseRollAnimation.vue'
 import CaseResult from '~/components/CaseResult.vue'
 
+const { apiCall } = useApi()
+
 const search = ref('')
 const selectedCase = ref(null)
 const rolling = ref(false)
@@ -150,12 +152,11 @@ async function onRollDone(wonSkin) {
   
   // Make API call to save the won skin to inventory (if user is logged in)
   try {
-    const response = await fetch(`http://localhost:4000/api/inventory/add`, {
+    const response = await apiCall('/api/inventory/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      credentials: 'include',
       body: JSON.stringify(wonSkin)
     })
     

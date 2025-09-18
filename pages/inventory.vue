@@ -16,16 +16,13 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+
+const { apiCall } = useApi()
 const inventory = ref([])
 
 onMounted(async () => {
   try {
-    const res = await fetch('http://localhost:4000/api/inventory', {
-      credentials: 'include'
-    })
-    if (res.ok) {
-      inventory.value = await res.json()
-    }
+    inventory.value = await apiCall('/api/inventory')
   } catch (error) {
     console.error('Failed to fetch inventory:', error)
   }

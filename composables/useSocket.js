@@ -7,7 +7,10 @@ const error = ref(null)
 
 export function useSocket() {
   if (!socket) {
-    socket = io('http://localhost:4000', {
+    const config = useRuntimeConfig()
+    const socketUrl = config.public.apiBaseUrl || 'http://localhost:4000'
+    
+    socket = io(socketUrl, {
       withCredentials: true,
       transports: ['websocket', 'polling']
     })

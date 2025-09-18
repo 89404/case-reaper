@@ -7,26 +7,34 @@
       <button @click="logout" class="ml-4 bg-red hover:bg-accent2 text-background font-bold py-1 px-4 rounded transition">Uitloggen</button>
     </div>
     <div v-else>
-      <a href="http://localhost:4000/api/auth/steam" class="bg-accent hover:bg-accent2 text-background font-bold py-2 px-6 rounded-lg text-lg transition">Login met Steam</a>
+      <a :href="steamLoginUrl" class="bg-accent hover:bg-accent2 text-background font-bold py-2 px-6 rounded-lg text-lg transition">Login met Steam</a>
     </div>
   </header>
 </template>
 
 <script setup>
 import { user, fetchUser } from '~/composables/useAuth.js'
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
+
+const { apiCall } = useApi()
+const config = useRuntimeConfig()
+
+const steamLoginUrl = computed(() => {
+  const baseURL = config.public.apiBaseUrl || 'http://localhost:4000'
+  return `${baseURL}/api/auth/steam`
+})
 
 onMounted(fetchUser)
 
 async function logout() {
   try {
-    await fetch('http://localhost:4000/api/auth/logout', { credentials: 'include' })
+    await apiCall('/api/auth/logout')
     user.value = null
-    window.location.href = 'http://localhost:3000/'
+    await navigateTo('/')
   } catch (error) {
     console.error('Logout failed:', error)
     user.value = null
-    window.location.href = 'http://localhost:3000/'
+    await navigateTo('/')
   }
 }
 </script>

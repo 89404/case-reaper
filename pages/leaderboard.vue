@@ -124,6 +124,8 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 
+const { apiCall } = useApi()
+
 const tab = ref('value')
 const leaderboardValue = ref([])
 const leaderboardCases = ref([])
@@ -137,22 +139,15 @@ onMounted(async () => {
 async function loadLeaderboards() {
   loading.value = true
   try {
-    const [valueRes, casesRes, battlesRes] = await Promise.all([
-      fetch('http://localhost:4000/api/leaderboard/value', { credentials: 'include' }),
-      fetch('http://localhost:4000/api/leaderboard/cases', { credentials: 'include' }),
-      fetch('http://localhost:4000/api/leaderboard/battles', { credentials: 'include' })
+    const [valueData, casesData, battlesData] = await Promise.all([
+      apiCall('/api/leaderboard/value'),
+      apiCall('/api/leaderboard/cases'),
+      apiCall('/api/leaderboard/battles').catch(() => []) // Handle battles endpoint that might not exist yet
     ])
     
-    leaderboardValue.value = await valueRes.json()
-    leaderboardCases.value = await casesRes.json()
-    
-    // Handle battles endpoint that might not exist yet
-    if (battlesRes.ok) {
-      leaderboardBattles.value = await battlesRes.json()
-    } else {
-      // Mock data for now since battles endpoint doesn't exist yet
-      leaderboardBattles.value = []
-    }
+    leaderboardValue.value = valueData
+    leaderboardCases.value = casesData
+    leaderboardBattles.value = battlesData
   } catch (error) {
     console.error('Failed to load leaderboards:', error)
   } finally {

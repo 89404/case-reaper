@@ -11,7 +11,7 @@
       </div>
       <a
         v-else
-        href="http://localhost:4000/api/auth/steam"
+        :href="steamLoginUrl"
         class="bg-accent hover:bg-accent2 text-background font-bold py-3 px-8 rounded-lg text-xl transition"
       >
         Login met Steam
@@ -21,16 +21,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { user, fetchUser } from '~/composables/useAuth.js'
+
+const { apiCall } = useApi()
+const config = useRuntimeConfig()
+
+const steamLoginUrl = computed(() => {
+  const baseURL = config.public.apiBaseUrl || 'http://localhost:4000'
+  return `${baseURL}/api/auth/steam`
+})
 
 onMounted(fetchUser)
 
 async function logout() {
   try {
-    await fetch('http://localhost:4000/api/auth/logout', {
-      credentials: 'include'
-    })
+    await apiCall('/api/auth/logout')
     user.value = null
     window.location.reload()
   } catch (error) {

@@ -12,7 +12,9 @@ export default defineNuxtConfig({
     steamRealm: process.env.STEAM_REALM,
     mongodbUri: process.env.MONGODB_URI,
     sessionSecret: process.env.SESSION_SECRET,
-    public: {}
+    public: {
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL
+    }
   },
   css: [
     '~/assets/css/tailwind.css',
