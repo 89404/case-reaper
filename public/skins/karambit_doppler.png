@@ -1,0 +1,18 @@
+<svg width="200" height="150" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="doppler" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4169e1;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#8a2be2;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff1493;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#ff4500;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="200" height="150" fill="#2a2a2a"/>
+  <rect x="10" y="10" width="180" height="130" fill="#3a3a3a" stroke="url(#doppler)" stroke-width="2"/>
+  <text x="100" y="70" text-anchor="middle" fill="#fff" font-family="Arial" font-size="14">Karambit</text>
+  <text x="100" y="90" text-anchor="middle" fill="url(#doppler)" font-family="Arial" font-size="12">Doppler</text>
+  <path d="M60 40 Q80 30 100 40 Q120 50 140 40" stroke="url(#doppler)" stroke-width="4" fill="none"/>
+  <path d="M60 110 Q80 120 100 110 Q120 100 140 110" stroke="url(#doppler)" stroke-width="4" fill="none"/>
+  <circle cx="100" cy="75" r="8" fill="url(#doppler)" opacity="0.7"/>
+</svg>

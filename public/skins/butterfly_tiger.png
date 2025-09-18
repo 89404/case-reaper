@@ -1,0 +1,9 @@
+<svg width="200" height="150" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="150" fill="#2a2a2a"/>
+  <rect x="10" y="10" width="180" height="130" fill="#3a3a3a" stroke="#ffa500" stroke-width="2"/>
+  <text x="100" y="70" text-anchor="middle" fill="#fff" font-family="Arial" font-size="14">Butterfly Knife</text>
+  <text x="100" y="90" text-anchor="middle" fill="#ffa500" font-family="Arial" font-size="12">Tiger Tooth</text>
+  <path d="M70 40 L130 40 L120 50 L110 45 L100 55 L90 45 L80 50 Z" fill="#ffa500" opacity="0.8"/>
+  <path d="M70 100 L130 100 L120 110 L110 105 L100 115 L90 105 L80 110 Z" fill="#ffa500" opacity="0.8"/>
+  <circle cx="100" cy="75" r="3" fill="#ffa500"/>
+</svg>

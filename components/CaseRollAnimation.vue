@@ -19,7 +19,8 @@
 import { ref, onMounted, nextTick, computed } from 'vue'
 const props = defineProps({
   skins: { type: Array, required: true },
-  customOdds: { type: Array, default: null }
+  customOdds: { type: Array, default: null },
+  predeterminedResult: { type: Object, default: null }
 })
 const emit = defineEmits(['done'])
 
@@ -138,11 +139,17 @@ function generateSkins() {
   const maxStopPosition = totalItems - 5  // Don't stop too late
   winnerIndex.value = Math.floor(Math.random() * (maxStopPosition - minStopPosition)) + minStopPosition
   
-  // Replace the skin at winner position with a properly rolled winner
-  const winnerRarity = getRandomRarity()
-  const winner = getRandomSkinByRarity(winnerRarity)
-  if (winner) {
-    allSkins.value[winnerIndex.value] = winner
+  // Use predetermined result if available, otherwise generate random winner
+  if (props.predeterminedResult) {
+    console.log('Using predetermined result:', props.predeterminedResult)
+    allSkins.value[winnerIndex.value] = props.predeterminedResult
+  } else {
+    // Replace the skin at winner position with a properly rolled winner
+    const winnerRarity = getRandomRarity()
+    const winner = getRandomSkinByRarity(winnerRarity)
+    if (winner) {
+      allSkins.value[winnerIndex.value] = winner
+    }
   }
 }
 
@@ -198,25 +205,31 @@ function startRoll() {
     if (progress < 1) {
       animationId = requestAnimationFrame(step)
     } else {
-      // Animation complete - find the skin closest to center line
+      // Animation complete
       animationComplete.value = true
       
-      // The center line is at position 450px (half of 900px width)
-      // Calculate which item's center aligns with the center line
-      const centerLinePosition = 450
-      // Add half item width to account for item center, not left edge
-      const actualWinnerIndex = Math.round((offset.value + centerLinePosition - itemWidth/2) / itemWidth)
-      const clampedIndex = Math.max(0, Math.min(actualWinnerIndex, totalItems - 1))
-      let actualWinner = allSkins.value[clampedIndex]
+      let actualWinner
       
-      // Handle gold items - randomly select from goldItems array
-      if (actualWinner.rarity === 'gold' && actualWinner.goldItems) {
-        const randomGoldItem = actualWinner.goldItems[Math.floor(Math.random() * actualWinner.goldItems.length)]
-        actualWinner = randomGoldItem
+      if (props.predeterminedResult) {
+        // Use the predetermined result
+        actualWinner = props.predeterminedResult
+        console.log('Animation complete, using predetermined result:', actualWinner)
+      } else {
+        // Find the skin closest to center line (original logic)
+        const centerLinePosition = 450
+        const actualWinnerIndex = Math.round((offset.value + centerLinePosition - itemWidth/2) / itemWidth)
+        const clampedIndex = Math.max(0, Math.min(actualWinnerIndex, totalItems - 1))
+        actualWinner = allSkins.value[clampedIndex]
+        
+        // Handle gold items - randomly select from goldItems array
+        if (actualWinner.rarity === 'gold' && actualWinner.goldItems) {
+          const randomGoldItem = actualWinner.goldItems[Math.floor(Math.random() * actualWinner.goldItems.length)]
+          actualWinner = randomGoldItem
+        }
+        
+        // Update winner index for visual effects
+        winnerIndex.value = clampedIndex
       }
-      
-      // Update winner index for visual effects
-      winnerIndex.value = clampedIndex
       
       setTimeout(() => emit('done', actualWinner), 800)
     }

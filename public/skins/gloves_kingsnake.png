@@ -1,0 +1,10 @@
+<svg width="200" height="150" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="150" fill="#2a2a2a"/>
+  <rect x="10" y="10" width="180" height="130" fill="#3a3a3a" stroke="#333" stroke-width="2"/>
+  <text x="100" y="70" text-anchor="middle" fill="#fff" font-family="Arial" font-size="14">Driver Gloves</text>
+  <text x="100" y="90" text-anchor="middle" fill="#333" font-family="Arial" font-size="12">King Snake</text>
+  <path d="M30 40 Q50 30 70 40 Q90 50 110 40 Q130 30 150 40 Q170 50 190 40" stroke="#333" stroke-width="3" fill="none"/>
+  <path d="M30 60 Q50 50 70 60 Q90 70 110 60 Q130 50 150 60 Q170 70 190 60" stroke="#333" stroke-width="3" fill="none"/>
+  <path d="M30 80 Q50 70 70 80 Q90 90 110 80 Q130 70 150 80 Q170 90 190 80" stroke="#333" stroke-width="3" fill="none"/>
+  <path d="M30 100 Q50 90 70 100 Q90 110 110 100 Q130 90 150 100 Q170 110 190 100" stroke="#333" stroke-width="3" fill="none"/>
+</svg>

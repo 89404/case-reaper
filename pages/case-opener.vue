@@ -39,7 +39,7 @@
             </div>
           </div>
           <div v-if="rolling" class="mb-8">
-            <CaseRollAnimation :skins="skins" :customOdds="customOdds" @done="onRollDone" />
+            <CaseRollAnimation :skins="skins" :customOdds="customOdds" :predeterminedResult="predeterminedResult" @done="onRollDone" />
           </div>
           <CaseResult v-if="resultSkin" :skin="resultSkin" :onAgain="openCase" :onClose="closeResult" />
           <div v-if="!resultSkin" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8 mt-6">
@@ -72,6 +72,7 @@ const showingCase = ref(false)
 const resultSkin = ref(null)
 const caseAnimationPhase = ref(0) // 0: shake, 1: opening
 const cases = ref([])
+const predeterminedResult = ref(null)
 const { contents: skins, fetchCaseContents } = useCaseContents()
 
 onMounted(async () => {
@@ -124,29 +125,56 @@ function selectCase(caseItem) {
   resultSkin.value = null
 }
 
-function openCase() {
+async function openCase() {
   rolling.value = false
   showingCase.value = false
   resultSkin.value = null
   caseAnimationPhase.value = 0
   
-  // Start with case animation
-  setTimeout(() => {
-    playOpenSound()
-    showingCase.value = true
-    caseAnimationPhase.value = 0 // Start shaking
+  try {
+    // Get the result from the API first
+    const apiResult = await apiCall(`/api/cases/open/${selectedCase.value._id}`)
+    console.log('API result:', apiResult)
     
-    // After shake, show opening animation
+    // Start with case animation
     setTimeout(() => {
-      caseAnimationPhase.value = 1 // Opening animation
+      playOpenSound()
+      showingCase.value = true
+      caseAnimationPhase.value = 0 // Start shaking
       
-      // After opening animation, start the roll
+      // After shake, show opening animation
       setTimeout(() => {
-        showingCase.value = false
-        rolling.value = true
-      }, 800) // 0.8 seconds for opening animation
-    }, 1200) // 1.5 seconds for shake animation
-  }, 300)
+        caseAnimationPhase.value = 1 // Opening animation
+        
+        // After opening animation, start the roll with the predetermined result
+        setTimeout(() => {
+          showingCase.value = false
+          rolling.value = true
+          // Store the API result to pass to the animation
+          predeterminedResult.value = apiResult
+        }, 800) // 0.8 seconds for opening animation
+      }, 1200) // 1.5 seconds for shake animation
+    }, 300)
+    
+  } catch (error) {
+    console.error('Error getting case result:', error)
+    // Fallback to original random behavior if API fails
+    setTimeout(() => {
+      playOpenSound()
+      showingCase.value = true
+      caseAnimationPhase.value = 0
+      
+      setTimeout(() => {
+        caseAnimationPhase.value = 1
+        
+        setTimeout(() => {
+          showingCase.value = false
+          rolling.value = true
+          predeterminedResult.value = null // Let animation decide
+        }, 800)
+      }, 1200)
+    }, 300)
+  }
 }
 
 function playOpenSound() {
@@ -155,27 +183,23 @@ function playOpenSound() {
   audio.play()
 }
 
-async function onRollDone(wonSkin) {
+function onRollDone(wonSkin) {
   rolling.value = false
   
-  try {
-    // Call the API to actually open the case and get the real result
-    const actualWonSkin = await apiCall(`/api/cases/open/${selectedCase.value._id}`)
-    
-    // Use the actual skin from the server (this ensures fair randomization)
-    resultSkin.value = actualWonSkin
-    
-    // Play reward sound based on rarity
-    playRewardSound(actualWonSkin.rarity)
-    
-    // The API already handles adding to inventory if user is authenticated
-    console.log('Case opened successfully:', actualWonSkin)
-    
-  } catch (error) {
-    console.error('Error opening case:', error)
-    // Fallback to the visually won skin if API fails
+  // Use the predetermined result from the API if available
+  if (predeterminedResult.value) {
+    resultSkin.value = predeterminedResult.value
+    playRewardSound(predeterminedResult.value.rarity)
+    console.log('Case opened successfully:', predeterminedResult.value)
+  } else {
+    // Fallback to the visually won skin if no predetermined result
     resultSkin.value = wonSkin
+    playRewardSound(wonSkin.rarity)
+    console.log('Using visual result as fallback:', wonSkin)
   }
+  
+  // Clear the predetermined result for next opening
+  predeterminedResult.value = null
 }
 
 function playRewardSound(rarity) {
