@@ -174,7 +174,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import { useSocket } from '~/composables/useSocket'
 import BattleCaseAnimation from '~/components/BattleCaseAnimation.vue'
-import useCaseContents from '~/composables/useCaseContents'
+import { useCaseContents } from '~/composables/useCaseContents'
 
 const { socket, isConnected } = useSocket()
 const { user, fetchUser } = useAuth()

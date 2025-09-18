@@ -11,7 +11,6 @@ export async function fetchUser() {
     user.value = null
   }
 }
-}
 
 export function useAuth() {
   return {

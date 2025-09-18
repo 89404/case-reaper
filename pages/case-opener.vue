@@ -56,8 +56,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import useCases from '~/composables/useCases'
-import useCaseContents from '~/composables/useCaseContents'
+import { useCases } from '~/composables/useCases'
+import { useCaseContents } from '~/composables/useCaseContents'
 import CaseRollAnimation from '~/components/CaseRollAnimation.vue'
 import CaseResult from '~/components/CaseResult.vue'
 
